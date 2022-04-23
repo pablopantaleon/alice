@@ -46,6 +46,7 @@ class AliceCallListItemWidget extends StatelessWidget {
   Widget _buildMethodAndEndpointRow(BuildContext context) {
     final Color? textColor = _getEndpointTextColor(context);
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           call.method,
@@ -58,8 +59,9 @@ class AliceCallListItemWidget extends StatelessWidget {
           // ignore: avoid_unnecessary_containers
           child: Container(
             child: Text(
-              call.endpoint,
+              call.endpoint.breakWord,
               overflow: TextOverflow.ellipsis,
+              maxLines: 4,
               style: TextStyle(
                 fontSize: 16,
                 color: textColor,
@@ -219,5 +221,18 @@ class AliceCallListItemWidget extends StatelessWidget {
         size: 12,
       ),
     );
+  }
+}
+
+// Workaround to prevent unexpected line breaks
+// https://github.com/flutter/flutter/issues/61081
+extension on String {
+  String get breakWord {
+    String breakWord = '';
+    runes.forEach((element) {
+      breakWord += String.fromCharCode(element);
+      breakWord += '\u200B';
+    });
+    return breakWord;
   }
 }
